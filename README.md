@@ -1,4 +1,4 @@
-<! Design by Marghubur Rahman>
+<Design By Marghubur Rahman>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -23,10 +23,7 @@ body{
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-h2{
-    text-align:center;
-    color:#0a6d5c;
-}
+h2{text-align:center;color:#0a6d5c;}
 
 input,select{
     width:100%;
@@ -45,9 +42,7 @@ button{
     border-radius:8px;
 }
 
-button:hover{
-    background:#06724a;
-}
+button:hover{background:#06724a;}
 
 .hidden{display:none;}
 
@@ -57,6 +52,7 @@ button:hover{
     border:2px dashed green;
     background:#f0fff4;
     border-radius:10px;
+    text-align:center;
 }
 
 .design-by{
@@ -67,7 +63,7 @@ button:hover{
     color:white;
     padding:8px 12px;
     border-radius:8px;
-    font-size:18px;
+    font-size:13px;
 }
 
 .success{
@@ -90,7 +86,8 @@ button:hover{
 <input id="father" placeholder="Father Name" required>
 <input id="mobile" placeholder="Mobile" required>
 <input id="address" placeholder="Address" required>
-<input id="aadhar" placeholder="Aadhar Number" required>
+
+<input id="aadhar" placeholder="Aadhar (XXXX-XXXX-XXXX)" maxlength="14" required>
 
 <select id="class" required>
 <option value="">Select Class</option>
@@ -135,11 +132,12 @@ button:hover{
 
 </div>
 
-<div class="design-by">Design by_Marghubur Rahman</div>
+<div class="design-by">Design by M Rahman</div>
 
 <script>
-emailjs.init("NUS5BbA9xrWDMm9eM");
+emailjs.init("q7WRi2qk3AUR725UG");
 
+// SUBJECT TOGGLE
 function showSubjects(){
     let stream = document.getElementById("stream").value;
 
@@ -150,6 +148,18 @@ function showSubjects(){
         (stream === "Arts") ? "block" : "none";
 }
 
+// AADHAR AUTO FORMAT
+document.getElementById("aadhar").addEventListener("input", function (e) {
+    let v = e.target.value.replace(/\D/g,"").substring(0,12);
+
+    let f = v;
+    if(v.length > 4) f = v.substring(0,4)+"-"+v.substring(4);
+    if(v.length > 8) f = v.substring(0,4)+"-"+v.substring(4,8)+"-"+v.substring(8);
+
+    e.target.value = f;
+});
+
+// SUBMIT
 document.getElementById("form").addEventListener("submit", function(e){
 e.preventDefault();
 
@@ -158,12 +168,12 @@ let subject = "";
 
 if(stream === "Science"){
     subject = document.getElementById("scienceSubject").value;
-    if(!subject){ alert("Select Science Subject"); return; }
+    if(!subject){ alert("Select Subject"); return; }
 }
 
 if(stream === "Arts"){
     subject = document.getElementById("artsSubject").value;
-    if(!subject){ alert("Select Arts Subject"); return; }
+    if(!subject){ alert("Select Subject"); return; }
 }
 
 if(stream === "Commerce"){
@@ -172,6 +182,12 @@ if(stream === "Commerce"){
 
 let file = document.getElementById("photo").files[0];
 if(!file){ alert("Upload photo"); return; }
+
+let aadhar = document.getElementById("aadhar").value.replace(/-/g,"");
+if(!/^\d{12}$/.test(aadhar)){
+    alert("❌ Aadhar must be 12 digits");
+    return;
+}
 
 let reader = new FileReader();
 
@@ -184,90 +200,99 @@ let data = {
     father:document.getElementById("father").value,
     mobile:document.getElementById("mobile").value,
     address:document.getElementById("address").value,
-    aadhar:document.getElementById("aadhar").value,
     class:document.getElementById("class").value,
     stream:stream,
     subject:subject,
     date:new Date().toLocaleString()
 };
 
-// ================= EMAIL =================
-emailjs.send("service_bnw6tan", "template_ibobhad", {
-    name: data.name,
-    father: data.father,
-    mobile: data.mobile,
-    address: data.address,
-    aadhar: data.aadhar,
-    class: data.class,
-    stream: data.stream,
-    subject: data.subject,
-    date: data.date
+// EMAIL
+emailjs.send("service_bnw6tan","template_ye9opt9",{
+    name:data.name,
+    father:data.father,
+    mobile:data.mobile,
+    address:data.address,
+    aadhar:aadhar,
+    class:data.class,
+    stream:data.stream,
+    subject:data.subject,
+    date:data.date
 });
 
-// ================= SUCCESS =================
-alert("🎉 Registration Successful: " + data.name);
+// WHATSAPP AUTO OPEN
+let message = `
+New Student Registration:
 
-// ================= SLIP =================
+Name: ${data.name}
+Father: ${data.father}
+Mobile: ${data.mobile}
+Address: ${data.address}
+Aadhar: ${aadhar}
+Class: ${data.class}
+Stream: ${data.stream}
+Subject: ${data.subject}
+Date: ${data.date}
+`;
+
+window.open("https://wa.me/919263960341?text="+encodeURIComponent(message),"_blank");
+
+// SLIP
 document.getElementById("slip").innerHTML = `
 <div class="slip" id="printArea">
+
 <h3>Registration Slip</h3>
 
-<imgsrc="${photo}"style="width:120px;height:120px;border-radius:10px;border:2px solid green;margin-bottom:10px;"><br>
+<img src="${photo}" style="width:120px;height:120px;border-radius:10px;border:2px solid #0a8f5a;"><br><br>
 
 <b>Name:</b> ${data.name}<br>
 <b>Class:</b> ${data.class}<br>
 <b>Stream:</b> ${data.stream}<br>
 <b>Subject:</b> ${data.subject}<br>
 <b>Address:</b> ${data.address}<br>
-<b>Aadhar:</b> ${data.aadhar}<br>
+<b>Aadhar:</b> ${aadhar}<br>
 <b>Date:</b> ${data.date}<br><br>
+
 <button onclick="printSlip()">🖨️ Print Slip</button>
 </div>`;
 
-// ================= PDF =================
+// PDF
 const { jsPDF } = window.jspdf;
 let doc = new jsPDF();
 
 // HEADER
-doc.setFillColor(10, 143, 90);
-doc.rect(0, 0, 220, 30, "F");
+doc.setFillColor(10,143,90);
+doc.rect(0,0,220,30,"F");
 
 doc.setTextColor(255,255,255);
 doc.setFontSize(16);
-doc.text("CATALYST EDUCATIONAL CAMPUS", 35, 20);
+doc.text("CATALYST EDUCATIONAL CAMPUS",35,20);
 
 // BORDER
 doc.setTextColor(0,0,0);
 doc.setDrawColor(0,150,100);
-doc.rect(10, 40, 190, 140);
+doc.rect(10,40,190,140);
 
 // DETAILS
 doc.setFontSize(12);
-doc.text("REGISTRATION SLIP", 15, 50);
-
-doc.text("Name: " + data.name, 15, 65);
-doc.text("Father: " + data.father, 15, 75);
-doc.text("Mobile: " + data.mobile, 15, 85);
-doc.text("Address: " + data.address, 15, 95);
-doc.text("Aadhar: " + data.aadhar, 15, 105);
-doc.text("Class: " + data.class, 15, 115);
-doc.text("Stream: " + data.stream, 15, 125);
-doc.text("Subject: " + data.subject, 15, 135);
-doc.text("Date: " + data.date, 15, 145);
+doc.text("REGISTRATION SLIP",15,50);
+doc.text("Name: "+data.name,15,65);
+doc.text("Father: "+data.father,15,75);
+doc.text("Mobile: "+data.mobile,15,85);
+doc.text("Address: "+data.address,15,95);
+doc.text("Aadhar: "+aadhar,15,105);
+doc.text("Class: "+data.class,15,115);
+doc.text("Stream: "+data.stream,15,125);
+doc.text("Subject: "+data.subject,15,135);
+doc.text("Date: "+data.date,15,145);
 
 // PHOTO
-doc.rect(145, 55, 50, 50);
-doc.text("Photo", 160, 52);
-doc.addImage(photo, "JPEG", 145, 55, 50, 50);
+doc.rect(145,55,50,50);
+doc.addImage(photo,"JPEG",145,55,50,50);
 
-// FOOTER
-doc.setFontSize(10);
-doc.text("This is an official registration slip", 50, 180);
+// SAVE
+doc.save(data.name+"_Slip.pdf");
 
-doc.save(data.name + "_Slip.pdf");
-
-document.getElementById("msg").innerText =
-"✅ Registration Successful";
+document.getElementById("msg").innerText="✅ Registration Successful";
 
 };
 
@@ -276,10 +301,9 @@ reader.readAsDataURL(file);
 
 // PRINT
 function printSlip(){
-    let win = window.open('', '', 'width=800,height=600');
-    win.document.write(document.getElementById("printArea").innerHTML);
-    win.document.close();
-    win.print();
+    let w = window.open('');
+    w.document.write(document.getElementById("printArea").innerHTML);
+    w.print();
 }
 </script>
 
