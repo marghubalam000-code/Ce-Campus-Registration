@@ -8,18 +8,72 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{font-family:Arial;background:linear-gradient(135deg,#00c9ff,#92fe9d);} 
-.container{max-width:500px;margin:auto;background:#fff;padding:20px;border-radius:15px;} 
-button{background:green;color:white;padding:12px;width:100%;border:none;} 
-.hidden{display:none;} 
-.slip{background:#eaffea;padding:10px;margin-top:10px;border:1px solid green;} 
+body{
+    font-family:Arial;
+    background:linear-gradient(135deg,#00c9ff,#92fe9d);
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:520px;
+    margin:auto;
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h2{
+    text-align:center;
+    color:#0a6d5c;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    background:#0a8f5a;
+    color:white;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#06724a;
+}
+
+.hidden{display:none;}
+
+.slip{
+    margin-top:15px;
+    padding:15px;
+    border:2px dashed green;
+    background:#f0fff4;
+    border-radius:10px;
+}
+
+.success{
+    color:green;
+    font-weight:bold;
+    text-align:center;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h2 style="text-align:center;">CATALYST EDUCATIONAL CAMPUS</h2>
+<h2>CATALYST EDUCATIONAL CAMPUS</h2>
 
 <form id="form">
 <input id="name" placeholder="Student Name" required>
@@ -60,14 +114,12 @@ button{background:green;color:white;padding:12px;width:100%;border:none;}
 </select>
 </div>
 
-<br>
-<input type="file" id="photo" required><br><br>
+<input type="file" id="photo" required>
 
 <button type="submit">Register</button>
-
 </form>
 
-<p id="msg"></p>
+<p id="msg" class="success"></p>
 <div id="slip"></div>
 
 </div>
@@ -75,43 +127,47 @@ button{background:green;color:white;padding:12px;width:100%;border:none;}
 <script>
 emailjs.init("q7WRi2qk3AUR725UG");
 
+// FIXED FUNCTION
 function showSubjects(){
- let stream=document.getElementById("stream").value;
- document.getElementById("scienceBox").style.display = (stream==="Science")?"block":"none";
- document.getElementById("artsBox").style.display = (stream==="Arts")?"block":"none":"none";
- document.getElementById("artsBox").style.display = (stream==="Arts")?"block":"none";
+    let stream = document.getElementById("stream").value;
+
+    document.getElementById("scienceBox").style.display =
+        (stream === "Science") ? "block" : "none";
+
+    document.getElementById("artsBox").style.display =
+        (stream === "Arts") ? "block" : "none";
 }
 
 document.getElementById("form").addEventListener("submit", function(e){
- e.preventDefault();
+e.preventDefault();
 
- let stream=document.getElementById("stream").value;
- let subject="";
+let stream = document.getElementById("stream").value;
+let subject = "";
 
- if(stream==="Science"){
-   subject=document.getElementById("scienceSubject").value;
-   if(!subject){ alert("Select Science Subject"); return; }
- }
+if(stream === "Science"){
+    subject = document.getElementById("scienceSubject").value;
+    if(!subject){ alert("Select Science Subject"); return; }
+}
 
- if(stream==="Arts"){
-   subject=document.getElementById("artsSubject").value;
-   if(!subject){ alert("Select Arts Subject"); return; }
- }
+if(stream === "Arts"){
+    subject = document.getElementById("artsSubject").value;
+    if(!subject){ alert("Select Arts Subject"); return; }
+}
 
- if(stream==="Commerce"){
-   subject="Commerce";
- }
+if(stream === "Commerce"){
+    subject = "Commerce";
+}
 
- let file=document.getElementById("photo").files[0];
- if(!file){ alert("Upload photo"); return; }
+let file = document.getElementById("photo").files[0];
+if(!file){ alert("Upload photo"); return; }
 
- let reader=new FileReader();
+let reader = new FileReader();
 
- reader.onload = function(event){
+reader.onload = function(event){
 
-  let photo = event.target.result;
+let photo = event.target.result;
 
-  let data={
+let data = {
     name:document.getElementById("name").value,
     father:document.getElementById("father").value,
     mobile:document.getElementById("mobile").value,
@@ -121,55 +177,67 @@ document.getElementById("form").addEventListener("submit", function(e){
     stream:stream,
     subject:subject,
     date:new Date().toLocaleString()
-  };
+};
 
-  // EMAIL
-  emailjs.send("service_bnw6tan","__ejs-test-mail-service__",data);
+// EMAIL (safe check)
+emailjs.send("service_bnw6tan","__ejs-test-mail-service__",data);
 
-  // POPUP
-  alert("🎉 Welcome to CE Campus, " + data.name);
+// POPUP
+alert("🎉 Welcome to CE Campus, " + data.name);
 
-  // SLIP
-  document.getElementById("slip").innerHTML = `
-  <div class="slip">
-  <h3>Registration Slip</h3>
-  Name: ${data.name}<br>
-  Class: ${data.class}<br>
-  Stream: ${data.stream}<br>
-  Subject: ${data.subject}<br>
-  Address: ${data.address}<br>
-  Aadhar: ${data.aadhar}<br>
-  Date: ${data.date}
-  </div>`;
+// SLIP UI
+document.getElementById("slip").innerHTML = `
+<div class="slip" id="printArea">
+<h3>Registration Slip</h3>
+<b>Name:</b> ${data.name}<br>
+<b>Class:</b> ${data.class}<br>
+<b>Stream:</b> ${data.stream}<br>
+<b>Subject:</b> ${data.subject}<br>
+<b>Address:</b> ${data.address}<br>
+<b>Aadhar:</b> ${data.aadhar}<br>
+<b>Date:</b> ${data.date}<br><br>
 
-  // PDF
-  const { jsPDF } = window.jspdf;
-  let doc=new jsPDF();
+<button onclick="printSlip()">🖨️ Print Slip</button>
+</div>`;
 
-  doc.setFontSize(16);
-  doc.text("CATALYST EDUCATIONAL CAMPUS",20,20);
+// PDF
+const { jsPDF } = window.jspdf;
+let doc = new jsPDF();
 
-  doc.setFontSize(12);
-  doc.text("Name: "+data.name,20,40);
-  doc.text("Father: "+data.father,20,50);
-  doc.text("Mobile: "+data.mobile,20,60);
-  doc.text("Address: "+data.address,20,70);
-  doc.text("Aadhar: "+data.aadhar,20,80);
-  doc.text("Class: "+data.class,20,90);
-  doc.text("Stream: "+data.stream,20,100);
-  doc.text("Subject: "+data.subject,20,110);
+doc.text("CATALYST EDUCATIONAL CAMPUS",20,20);
+doc.text("Name: "+data.name,20,40);
+doc.text("Father: "+data.father,20,50);
+doc.text("Mobile: "+data.mobile,20,60);
+doc.text("Address: "+data.address,20,70);
+doc.text("Aadhar: "+data.aadhar,20,80);
+doc.text("Class: "+data.class,20,90);
+doc.text("Stream: "+data.stream,20,100);
+doc.text("Subject: "+data.subject,20,110);
 
-  doc.addImage(photo,'JPEG',140,40,40,40);
+doc.addImage(photo,'JPEG',140,40,40,40);
 
-  doc.save(data.name+"_Slip.pdf");
+doc.save(data.name+"_Slip.pdf");
 
-  document.getElementById("msg").innerText="✅ Registration Successful";
- };
+document.getElementById("msg").innerText =
+"✅ Registration Successful";
+};
 
- reader.readAsDataURL(file);
-
+reader.readAsDataURL(file);
 });
 
+// PRINT FUNCTION (NEW)
+function printSlip(){
+    let printContent = document.getElementById("printArea").innerHTML;
+    let win = window.open('', '', 'width=800,height=600');
+    win.document.write(`
+        <html>
+        <head><title>Print Slip</title></head>
+        <body>${printContent}</body>
+        </html>
+    `);
+    win.document.close();
+    win.print();
+}
 </script>
 
 </body>
