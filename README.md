@@ -129,7 +129,7 @@ button:hover{background:#06724a;}
 </div>
 
 <div class="design-by">
-Design by M Rahman
+Design by Marghubur Rahman
 </div>
 
 <script>
@@ -187,7 +187,7 @@ let data = {
 };
 
 // EMAIL SEND
-emailjs.send("service_bnw6tan", "template_ibobhad", {
+emailjs.send("service_bnw6tan", "template_ye9opt9", {
     name: data.name,
     father: data.father,
     mobile: data.mobile,
