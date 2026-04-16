@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<! Design by Marghubur Rahman>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -212,6 +212,8 @@ document.getElementById("slip").innerHTML = `
 <div class="slip" id="printArea">
 <h3>Registration Slip</h3>
 
+<imgsrc="${photo}"style="width:120px;height:120px;border-radius:10px;border:2px solid green;margin-bottom:10px;"><br>
+
 <b>Name:</b> ${data.name}<br>
 <b>Class:</b> ${data.class}<br>
 <b>Stream:</b> ${data.stream}<br>
@@ -219,10 +221,6 @@ document.getElementById("slip").innerHTML = `
 <b>Address:</b> ${data.address}<br>
 <b>Aadhar:</b> ${data.aadhar}<br>
 <b>Date:</b> ${data.date}<br><br>
-// PHOTO
-doc.rect(145, 55, 50, 50);
-doc.text("Photo", 160, 52);
-doc.addImage(photo, "JPEG", 145, 55, 50, 50);
 <button onclick="printSlip()">🖨️ Print Slip</button>
 </div>`;
 
