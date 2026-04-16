@@ -23,7 +23,10 @@ body{
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-h2{text-align:center;color:#0a6d5c;}
+h2{
+    text-align:center;
+    color:#0a6d5c;
+}
 
 input,select{
     width:100%;
@@ -137,160 +140,159 @@ button:hover{background:#06724a;}
 <script>
 emailjs.init("q7WRi2qk3AUR725UG");
 
-// SUBJECT TOGGLE
+// SUBJECT
 function showSubjects(){
-    let stream = document.getElementById("stream").value;
-
-    document.getElementById("scienceBox").style.display =
-        (stream === "Science") ? "block" : "none";
-
-    document.getElementById("artsBox").style.display =
-        (stream === "Arts") ? "block" : "none";
+    let stream=document.getElementById("stream").value;
+    document.getElementById("scienceBox").style.display=
+        (stream==="Science")?"block":"none";
+    document.getElementById("artsBox").style.display=
+        (stream==="Arts")?"block":"none";
 }
 
 // AADHAR AUTO FORMAT
-document.getElementById("aadhar").addEventListener("input", function (e) {
-    let v = e.target.value.replace(/\D/g,"").substring(0,12);
+document.getElementById("aadhar").addEventListener("input",function(e){
+    let v=e.target.value.replace(/\D/g,"").substring(0,12);
 
-    let f = v;
-    if(v.length > 4) f = v.substring(0,4)+"-"+v.substring(4);
-    if(v.length > 8) f = v.substring(0,4)+"-"+v.substring(4,8)+"-"+v.substring(8);
+    let f=v;
+    if(v.length>4) f=v.substring(0,4)+"-"+v.substring(4);
+    if(v.length>8) f=v.substring(0,4)+"-"+v.substring(4,8)+"-"+v.substring(8);
 
-    e.target.value = f;
+    e.target.value=f;
 });
 
 // SUBMIT
-document.getElementById("form").addEventListener("submit", function(e){
+document.getElementById("form").addEventListener("submit",function(e){
 e.preventDefault();
 
-let stream = document.getElementById("stream").value;
-let subject = "";
+let stream=document.getElementById("stream").value;
+let subject="";
 
-if(stream === "Science"){
-    subject = document.getElementById("scienceSubject").value;
-    if(!subject){ alert("Select Subject"); return; }
+if(stream==="Science"){
+subject=document.getElementById("scienceSubject").value;
+if(!subject){alert("Select Subject");return;}
+}
+if(stream==="Arts"){
+subject=document.getElementById("artsSubject").value;
+if(!subject){alert("Select Subject");return;}
+}
+if(stream==="Commerce") subject="Commerce";
+
+let file=document.getElementById("photo").files[0];
+if(!file){alert("Upload photo");return;}
+
+// ================= STRONG AADHAR VALIDATION =================
+let aadharInput=document.getElementById("aadhar").value;
+let aadhar=aadharInput.replace(/\D/g,"");
+
+if(aadhar.length!==12){
+alert("❌ Invalid Aadhar! Must be exactly 12 digits");
+document.getElementById("aadhar").focus();
+return;
 }
 
-if(stream === "Arts"){
-    subject = document.getElementById("artsSubject").value;
-    if(!subject){ alert("Select Subject"); return; }
+if(/^(\d)\1{11}$/.test(aadhar)){
+alert("❌ Invalid Aadhar Number");
+document.getElementById("aadhar").focus();
+return;
 }
 
-if(stream === "Commerce"){
-    subject = "Commerce";
-}
+let reader=new FileReader();
 
-let file = document.getElementById("photo").files[0];
-if(!file){ alert("Upload photo"); return; }
+reader.onload=function(event){
 
-let aadhar = document.getElementById("aadhar").value.replace(/-/g,"");
-if(!/^\d{12}$/.test(aadhar)){
-    alert("❌ Aadhar must be 12 digits");
-    return;
-}
+let photo=event.target.result;
 
-let reader = new FileReader();
-
-reader.onload = function(event){
-
-let photo = event.target.result;
-
-let data = {
-    name:document.getElementById("name").value,
-    father:document.getElementById("father").value,
-    mobile:document.getElementById("mobile").value,
-    address:document.getElementById("address").value,
-    class:document.getElementById("class").value,
-    stream:stream,
-    subject:subject,
-    date:new Date().toLocaleString()
+let data={
+name:document.getElementById("name").value,
+father:document.getElementById("father").value,
+mobile:document.getElementById("mobile").value,
+address:document.getElementById("address").value,
+class:document.getElementById("class").value,
+stream:stream,
+subject:subject,
+date:new Date().toLocaleString()
 };
 
 // EMAIL
 emailjs.send("service_bnw6tan","template_ye9opt9",{
-    name:data.name,
-    father:data.father,
-    mobile:data.mobile,
-    address:data.address,
-    aadhar:aadhar,
-    class:data.class,
-    stream:data.stream,
-    subject:data.subject,
-    date:data.date
+name:data.name,
+father:data.father,
+mobile:data.mobile,
+address:data.address,
+aadhar:aadhar,
+class:data.class,
+stream:data.stream,
+subject:data.subject,
+date:data.date
 });
 
-// WHATSAPP AUTO OPEN
-let message = `
-New Student Registration:
+// WHATSAPP
+let msg=`New Registration:
+Name:${data.name}
+Father:${data.father}
+Mobile:${data.mobile}
+Address:${data.address}
+Aadhar:${aadhar}
+Class:${data.class}
+Stream:${data.stream}
+Subject:${data.subject}
+Date:${data.date}`;
 
-Name: ${data.name}
-Father: ${data.father}
-Mobile: ${data.mobile}
-Address: ${data.address}
-Aadhar: ${aadhar}
-Class: ${data.class}
-Stream: ${data.stream}
-Subject: ${data.subject}
-Date: ${data.date}
-`;
-
-window.open("https://wa.me/919263960341?text="+encodeURIComponent(message),"_blank");
+window.open("https://wa.me/919263960341?text="+encodeURIComponent(msg),"_blank");
 
 // SLIP
-document.getElementById("slip").innerHTML = `
-<div class="slip" id="printArea">
+document.getElementById("slip").innerHTML=`
+<div class="slip">
 
-<h3>Registration Slip</h3>
+<img src="${photo}" style="width:120px;height:120px;border-radius:10px;border:2px solid green;"><br><br>
 
-<img src="${photo}" style="width:120px;height:120px;border-radius:10px;border:2px solid #0a8f5a;"><br><br>
-
-<b>Name:</b> ${data.name}<br>
-<b>Class:</b> ${data.class}<br>
-<b>Stream:</b> ${data.stream}<br>
-<b>Subject:</b> ${data.subject}<br>
-<b>Address:</b> ${data.address}<br>
-<b>Aadhar:</b> ${aadhar}<br>
-<b>Date:</b> ${data.date}<br><br>
+<b>Name:</b>${data.name}<br>
+<b>Class:</b>${data.class}<br>
+<b>Stream:</b>${data.stream}<br>
+<b>Subject:</b>${data.subject}<br>
+<b>Aadhar:</b>${aadhar}<br>
+<b>Date:</b>${data.date}<br><br>
 
 <button onclick="printSlip()">🖨️ Print Slip</button>
 </div>`;
 
 // PDF
-const { jsPDF } = window.jspdf;
-let doc = new jsPDF();
+const {jsPDF}=window.jspdf;
+let doc=new jsPDF();
 
-// HEADER
 doc.setFillColor(10,143,90);
-doc.rect(0,0,220,30,"F");
+doc.rect(0,0,220,40,"F");
 
 doc.setTextColor(255,255,255);
-doc.setFontSize(16);
-doc.text("CATALYST EDUCATIONAL CAMPUS",35,20);
+doc.setFontSize(22);
+doc.text("CATALYST EDUCATIONAL CAMPUS",20,25);
 
-// BORDER
-doc.setTextColor(0,0,0);
-doc.setDrawColor(0,150,100);
-doc.rect(10,40,190,140);
-
-// DETAILS
 doc.setFontSize(12);
-doc.text("REGISTRATION SLIP",15,50);
-doc.text("Name: "+data.name,15,65);
-doc.text("Father: "+data.father,15,75);
-doc.text("Mobile: "+data.mobile,15,85);
-doc.text("Address: "+data.address,15,95);
-doc.text("Aadhar: "+aadhar,15,105);
-doc.text("Class: "+data.class,15,115);
-doc.text("Stream: "+data.stream,15,125);
-doc.text("Subject: "+data.subject,15,135);
-doc.text("Date: "+data.date,15,145);
+doc.text("REGISTRATION CERTIFICATE",55,35);
+
+doc.setDrawColor(0,150,100);
+doc.rect(10,50,190,200);
+
+doc.setTextColor(0,0,0);
+doc.text("Name:"+data.name,15,70);
+doc.text("Father:"+data.father,15,80);
+doc.text("Mobile:"+data.mobile,15,90);
+doc.text("Address:"+data.address,15,100);
+doc.text("Aadhar:"+aadhar,15,110);
+doc.text("Class:"+data.class,15,120);
+doc.text("Stream:"+data.stream,15,130);
+doc.text("Subject:"+data.subject,15,140);
+doc.text("Date:"+data.date,15,150);
 
 // PHOTO
-doc.rect(145,55,50,50);
-doc.addImage(photo,"JPEG",145,55,50,50);
+doc.rect(145,60,50,50);
+doc.addImage(photo,"JPEG",145,60,50,50);
 
-// SAVE
-doc.save(data.name+"_Slip.pdf");
+doc.setFontSize(12);
+doc.setTextColor(10,143,90);
+doc.text("REGISTRATION SUCCESSFUL",40,190);
+
+doc.save(data.name+"_Certificate.pdf");
 
 document.getElementById("msg").innerText="✅ Registration Successful";
 
@@ -301,9 +303,9 @@ reader.readAsDataURL(file);
 
 // PRINT
 function printSlip(){
-    let w = window.open('');
-    w.document.write(document.getElementById("printArea").innerHTML);
-    w.print();
+let w=window.open('');
+w.document.write(document.body.innerHTML);
+w.print();
 }
 </script>
 
