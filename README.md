@@ -109,7 +109,7 @@ form.addEventListener("submit",function(e){
   };
 
   // EMAIL
-  emailjs.send("service_bnw6tan","ejs-test-mail-service",data);
+  emailjs.send("service_bnw6tan","__ejs-test-mail-service__",data);
 
   // PDF FIXED DESIGN
   const { jsPDF } = window.jspdf;
