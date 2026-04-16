@@ -138,7 +138,7 @@ button:hover{
 <div class="design-by">Design by Marghubur Rahman</div>
 
 <script>
-emailjs.init("q7WRi2qk3AUR725UG");
+emailjs.init("NUS5BbA9xrWDMm9eM");
 
 function showSubjects(){
     let stream = document.getElementById("stream").value;
@@ -192,7 +192,7 @@ let data = {
 };
 
 // ================= EMAIL =================
-emailjs.send("service_bnw6tan", "template_ye9opt9", {
+emailjs.send("service_bnw6tan", "template_ibobhad", {
     name: data.name,
     father: data.father,
     mobile: data.mobile,
