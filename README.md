@@ -23,7 +23,10 @@ body{
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-h2{text-align:center;color:#0a6d5c;}
+h2{
+    text-align:center;
+    color:#0a6d5c;
+}
 
 input,select{
     width:100%;
@@ -40,10 +43,11 @@ button{
     width:100%;
     border:none;
     border-radius:8px;
-    cursor:pointer;
 }
 
-button:hover{background:#06724a;}
+button:hover{
+    background:#06724a;
+}
 
 .hidden{display:none;}
 
@@ -65,6 +69,7 @@ button:hover{background:#06724a;}
     border-radius:8px;
     font-size:13px;
 }
+
 .success{
     text-align:center;
     color:green;
@@ -80,6 +85,7 @@ button:hover{background:#06724a;}
 <h2>CATALYST EDUCATIONAL CAMPUS</h2>
 
 <form id="form">
+
 <input id="name" placeholder="Student Name" required>
 <input id="father" placeholder="Father Name" required>
 <input id="mobile" placeholder="Mobile" required>
@@ -121,6 +127,7 @@ button:hover{background:#06724a;}
 <input type="file" id="photo" required>
 
 <button type="submit">Register</button>
+
 </form>
 
 <p id="msg" class="success"></p>
@@ -128,9 +135,7 @@ button:hover{background:#06724a;}
 
 </div>
 
-<div class="design-by">
-Design by Marghubur Rahman
-</div>
+<div class="design-by">Design by Marghubur Rahman</div>
 
 <script>
 emailjs.init("q7WRi2qk3AUR725UG");
@@ -186,7 +191,7 @@ let data = {
     date:new Date().toLocaleString()
 };
 
-// EMAIL SEND
+// ================= EMAIL =================
 emailjs.send("service_bnw6tan", "template_ye9opt9", {
     name: data.name,
     father: data.father,
@@ -199,13 +204,14 @@ emailjs.send("service_bnw6tan", "template_ye9opt9", {
     date: data.date
 });
 
-// SUCCESS POPUP
+// ================= SUCCESS =================
 alert("🎉 Registration Successful: " + data.name);
 
-// SLIP
+// ================= SLIP =================
 document.getElementById("slip").innerHTML = `
 <div class="slip" id="printArea">
 <h3>Registration Slip</h3>
+
 <b>Name:</b> ${data.name}<br>
 <b>Class:</b> ${data.class}<br>
 <b>Stream:</b> ${data.stream}<br>
@@ -217,23 +223,47 @@ document.getElementById("slip").innerHTML = `
 <button onclick="printSlip()">🖨️ Print Slip</button>
 </div>`;
 
-// PDF GENERATE
+// ================= PDF =================
 const { jsPDF } = window.jspdf;
 let doc = new jsPDF();
 
-doc.text("CATALYST EDUCATIONAL CAMPUS",20,20);
-doc.text("Name: "+data.name,20,40);
-doc.text("Father: "+data.father,20,50);
-doc.text("Mobile: "+data.mobile,20,60);
-doc.text("Address: "+data.address,20,70);
-doc.text("Aadhar: "+data.aadhar,20,80);
-doc.text("Class: "+data.class,20,90);
-doc.text("Stream: "+data.stream,20,100);
-doc.text("Subject: "+data.subject,20,110);
+// HEADER
+doc.setFillColor(10, 143, 90);
+doc.rect(0, 0, 220, 30, "F");
 
-doc.addImage(photo,'JPEG',140,40,40,40);
+doc.setTextColor(255,255,255);
+doc.setFontSize(16);
+doc.text("CATALYST EDUCATIONAL CAMPUS", 35, 20);
 
-doc.save(data.name+"_Slip.pdf");
+// BORDER
+doc.setTextColor(0,0,0);
+doc.setDrawColor(0,150,100);
+doc.rect(10, 40, 190, 140);
+
+// DETAILS
+doc.setFontSize(12);
+doc.text("REGISTRATION SLIP", 15, 50);
+
+doc.text("Name: " + data.name, 15, 65);
+doc.text("Father: " + data.father, 15, 75);
+doc.text("Mobile: " + data.mobile, 15, 85);
+doc.text("Address: " + data.address, 15, 95);
+doc.text("Aadhar: " + data.aadhar, 15, 105);
+doc.text("Class: " + data.class, 15, 115);
+doc.text("Stream: " + data.stream, 15, 125);
+doc.text("Subject: " + data.subject, 15, 135);
+doc.text("Date: " + data.date, 15, 145);
+
+// PHOTO
+doc.rect(145, 55, 50, 50);
+doc.text("Photo", 160, 52);
+doc.addImage(photo, "JPEG", 145, 55, 50, 50);
+
+// FOOTER
+doc.setFontSize(10);
+doc.text("This is an official registration slip", 50, 180);
+
+doc.save(data.name + "_Slip.pdf");
 
 document.getElementById("msg").innerText =
 "✅ Registration Successful";
@@ -243,6 +273,7 @@ document.getElementById("msg").innerText =
 reader.readAsDataURL(file);
 });
 
+// PRINT
 function printSlip(){
     let win = window.open('', '', 'width=800,height=600');
     win.document.write(document.getElementById("printArea").innerHTML);
