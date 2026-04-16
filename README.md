@@ -67,7 +67,7 @@ button:hover{
     color:white;
     padding:8px 12px;
     border-radius:8px;
-    font-size:13px;
+    font-size:18px;
 }
 
 .success{
@@ -135,7 +135,7 @@ button:hover{
 
 </div>
 
-<div class="design-by">Design by Marghubur Rahman</div>
+<div class="design-by">Design by_Marghubur Rahman</div>
 
 <script>
 emailjs.init("NUS5BbA9xrWDMm9eM");
@@ -219,7 +219,10 @@ document.getElementById("slip").innerHTML = `
 <b>Address:</b> ${data.address}<br>
 <b>Aadhar:</b> ${data.aadhar}<br>
 <b>Date:</b> ${data.date}<br><br>
-
+// PHOTO
+doc.rect(145, 55, 50, 50);
+doc.text("Photo", 160, 52);
+doc.addImage(photo, "JPEG", 145, 55, 50, 50);
 <button onclick="printSlip()">🖨️ Print Slip</button>
 </div>`;
 
