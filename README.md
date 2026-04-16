@@ -1,37 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catalyst Educational Campus</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#00c9ff,#92fe9d);margin:0;}
-.container{max-width:520px;margin:30px auto;background:#fff;padding:25px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.3);} 
-.title{text-align:center;font-size:28px;font-weight:800;background:linear-gradient(90deg,#ff512f,#dd2476,#ff00cc);-webkit-background-clip:text;color:transparent;}
-.subtitle{text-align:center;color:#2e7d32;margin-top:-10px;}
-input,select{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:1px solid #ccc;}
-button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#28a745,#00c853);color:white;}
-.hidden{display:none;}
+body{font-family:Arial;background:linear-gradient(135deg,#00c9ff,#92fe9d);} 
+.container{max-width:500px;margin:auto;background:#fff;padding:20px;border-radius:15px;} 
+button{background:green;color:white;padding:12px;width:100%;border:none;} 
+.hidden{display:none;} 
+.slip{background:#eaffea;padding:10px;margin-top:10px;border:1px solid green;} 
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<div class="title">Catalyst Educational Campus</div>
-<div class="subtitle">Student Registration</div>
+<h2 style="text-align:center;">CATALYST EDUCATIONAL CAMPUS</h2>
 
 <form id="form">
 <input id="name" placeholder="Student Name" required>
 <input id="father" placeholder="Father Name" required>
 <input id="mobile" placeholder="Mobile" required>
+<input id="address" placeholder="Address" required>
+<input id="aadhar" placeholder="Aadhar Number" required>
 
-<select id="class">
+<select id="class" required>
 <option value="">Select Class</option>
 <option>Class 10</option>
 <option>Class 11</option>
@@ -63,13 +60,16 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;fon
 </select>
 </div>
 
-<label>Photo</label>
-<input type="file" id="photo" required>
+<br>
+<input type="file" id="photo" required><br><br>
 
-<button type="submit">🚀 Register Now</button>
+<button type="submit">Register</button>
+
 </form>
 
 <p id="msg"></p>
+<div id="slip"></div>
+
 </div>
 
 <script>
@@ -82,26 +82,41 @@ function showSubjects(){
  document.getElementById("artsBox").style.display = (stream==="Arts")?"block":"none";
 }
 
-form.addEventListener("submit",function(e){
+document.getElementById("form").addEventListener("submit", function(e){
  e.preventDefault();
 
+ let stream=document.getElementById("stream").value;
+ let subject="";
+
+ if(stream==="Science"){
+   subject=document.getElementById("scienceSubject").value;
+   if(!subject){ alert("Select Science Subject"); return; }
+ }
+
+ if(stream==="Arts"){
+   subject=document.getElementById("artsSubject").value;
+   if(!subject){ alert("Select Arts Subject"); return; }
+ }
+
+ if(stream==="Commerce"){
+   subject="Commerce";
+ }
+
  let file=document.getElementById("photo").files[0];
+ if(!file){ alert("Upload photo"); return; }
+
  let reader=new FileReader();
 
- reader.onloadend=function(){
-  let photo=reader.result;
+ reader.onload = function(event){
 
-  let stream=document.getElementById("stream").value;
-  let subject="";
-
-  if(stream==="Science") subject=document.getElementById("scienceSubject").value;
-  if(stream==="Arts") subject=document.getElementById("artsSubject").value;
-  if(stream==="Commerce") subject="Commerce";
+  let photo = event.target.result;
 
   let data={
-    name:name.value,
-    father:father.value,
-    mobile:mobile.value,
+    name:document.getElementById("name").value,
+    father:document.getElementById("father").value,
+    mobile:document.getElementById("mobile").value,
+    address:document.getElementById("address").value,
+    aadhar:document.getElementById("aadhar").value,
     class:document.getElementById("class").value,
     stream:stream,
     subject:subject,
@@ -111,38 +126,50 @@ form.addEventListener("submit",function(e){
   // EMAIL
   emailjs.send("service_bnw6tan","__ejs-test-mail-service__",data);
 
-  // PDF FIXED DESIGN
+  // POPUP
+  alert("🎉 Welcome to CE Campus, " + data.name);
+
+  // SLIP
+  document.getElementById("slip").innerHTML = `
+  <div class="slip">
+  <h3>Registration Slip</h3>
+  Name: ${data.name}<br>
+  Class: ${data.class}<br>
+  Stream: ${data.stream}<br>
+  Subject: ${data.subject}<br>
+  Address: ${data.address}<br>
+  Aadhar: ${data.aadhar}<br>
+  Date: ${data.date}
+  </div>`;
+
+  // PDF
   const { jsPDF } = window.jspdf;
   let doc=new jsPDF();
 
-  // HEADER
-  doc.setFontSize(18);
-  doc.setTextColor(40,167,69);
+  doc.setFontSize(16);
   doc.text("CATALYST EDUCATIONAL CAMPUS",20,20);
 
   doc.setFontSize(12);
-  doc.setTextColor(0,0,0);
+  doc.text("Name: "+data.name,20,40);
+  doc.text("Father: "+data.father,20,50);
+  doc.text("Mobile: "+data.mobile,20,60);
+  doc.text("Address: "+data.address,20,70);
+  doc.text("Aadhar: "+data.aadhar,20,80);
+  doc.text("Class: "+data.class,20,90);
+  doc.text("Stream: "+data.stream,20,100);
+  doc.text("Subject: "+data.subject,20,110);
 
-  doc.text("Registration Slip",20,30);
-
-  doc.text(`Name: ${data.name}`,20,45);
-  doc.text(`Father: ${data.father}`,20,55);
-  doc.text(`Mobile: ${data.mobile}`,20,65);
-  doc.text(`Class: ${data.class}`,20,75);
-  doc.text(`Stream: ${data.stream}`,20,85);
-  doc.text(`Subject: ${data.subject}`,20,95);
-  doc.text(`Date: ${data.date}`,20,105);
-
-  // PHOTO
   doc.addImage(photo,'JPEG',140,40,40,40);
 
   doc.save(data.name+"_Slip.pdf");
 
-  document.getElementById("msg").innerText="✅ Registration + PDF + Email Done";
+  document.getElementById("msg").innerText="✅ Registration Successful";
  };
 
  reader.readAsDataURL(file);
+
 });
+
 </script>
 
 </body>
