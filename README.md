@@ -8,12 +8,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{<div class="design-by">
-    Design by M Rahman
-</div>
+body{
     font-family:Arial;
     background:linear-gradient(135deg,#00c9ff,#92fe9d);
-    margin:0;
     padding:20px;
 }
 
@@ -26,10 +23,7 @@ body{<div class="design-by">
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-h2{
-    text-align:center;
-    color:#0a6d5c;
-}
+h2{text-align:center;color:#0a6d5c;}
 
 input,select{
     width:100%;
@@ -46,13 +40,10 @@ button{
     width:100%;
     border:none;
     border-radius:8px;
-    font-size:16px;
     cursor:pointer;
 }
 
-button:hover{
-    background:#06724a;
-}
+button:hover{background:#06724a;}
 
 .hidden{display:none;}
 
@@ -64,10 +55,20 @@ button:hover{
     border-radius:10px;
 }
 
+.design-by{
+    position:fixed;
+    right:10px;
+    bottom:10px;
+    background:#0a8f5a;
+    color:white;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:13px;
+}
 .success{
+    text-align:center;
     color:green;
     font-weight:bold;
-    text-align:center;
 }
 </style>
 </head>
@@ -75,6 +76,7 @@ button:hover{
 <body>
 
 <div class="container">
+
 <h2>CATALYST EDUCATIONAL CAMPUS</h2>
 
 <form id="form">
@@ -126,10 +128,13 @@ button:hover{
 
 </div>
 
+<div class="design-by">
+Design by M Rahman
+</div>
+
 <script>
 emailjs.init("q7WRi2qk3AUR725UG");
 
-// FIXED FUNCTION
 function showSubjects(){
     let stream = document.getElementById("stream").value;
 
@@ -181,13 +186,23 @@ let data = {
     date:new Date().toLocaleString()
 };
 
-// EMAIL (safe check)
-emailjs.send("service_bnw6tan","__ejs-test-mail-service__",data);
+// EMAIL SEND
+emailjs.send("service_bnw6tan", "template_ibobhad", {
+    name: data.name,
+    father: data.father,
+    mobile: data.mobile,
+    address: data.address,
+    aadhar: data.aadhar,
+    class: data.class,
+    stream: data.stream,
+    subject: data.subject,
+    date: data.date
+});
 
-// POPUP
-alert("🎉 Welcome to CE Campus, " + data.name);
+// SUCCESS POPUP
+alert("🎉 Registration Successful: " + data.name);
 
-// SLIP UI
+// SLIP
 document.getElementById("slip").innerHTML = `
 <div class="slip" id="printArea">
 <h3>Registration Slip</h3>
@@ -202,7 +217,7 @@ document.getElementById("slip").innerHTML = `
 <button onclick="printSlip()">🖨️ Print Slip</button>
 </div>`;
 
-// PDF
+// PDF GENERATE
 const { jsPDF } = window.jspdf;
 let doc = new jsPDF();
 
@@ -222,21 +237,15 @@ doc.save(data.name+"_Slip.pdf");
 
 document.getElementById("msg").innerText =
 "✅ Registration Successful";
+
 };
 
 reader.readAsDataURL(file);
 });
 
-// PRINT FUNCTION (NEW)
 function printSlip(){
-    let printContent = document.getElementById("printArea").innerHTML;
     let win = window.open('', '', 'width=800,height=600');
-    win.document.write(`
-        <html>
-        <head><title>Print Slip</title></head>
-        <body>${printContent}</body>
-        </html>
-    `);
+    win.document.write(document.getElementById("printArea").innerHTML);
     win.document.close();
     win.print();
 }
