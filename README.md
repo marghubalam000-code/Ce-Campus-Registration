@@ -53,7 +53,7 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;fon
 
 <script>
 // 🔑 EmailJS init (paste your PUBLIC KEY below)
-emailjs.init("YOUR_PUBLIC_KEY");
+emailjs.init("q7WRi2qk3AUR725UG");
 
 form.addEventListener("submit",function(e){
  e.preventDefault();
