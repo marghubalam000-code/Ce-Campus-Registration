@@ -140,3 +140,66 @@ function printSlip(){
 
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Registration</title>
+<style>
+body{font-family:Arial;background:#d4fc79;padding:20px;}
+.container{background:white;padding:20px;border-radius:10px;max-width:500px;margin:auto;}
+button{background:green;color:white;padding:10px;width:100%;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Student Registration</h2>
+
+<form id="form">
+<input id="name" placeholder="Name" required><br>
+<input id="father" placeholder="Father Name" required><br>
+<input id="mobile" placeholder="Mobile" required><br>
+<input id="aadhar" placeholder="Aadhar" required><br>
+
+<select id="class">
+<option>Class 10</option>
+<option>Class 11</option>
+<option>Class 12</option>
+</select>
+
+<select id="stream">
+<option>Science</option>
+<option>Commerce</option>
+<option>Arts</option>
+</select>
+
+<button type="submit">Register</button>
+</form>
+
+<p id="msg"></p>
+</div>
+
+<script>
+document.getElementById("form").addEventListener("submit", function(e){
+ e.preventDefault();
+
+ fetch("PASTE_YOUR_SCRIPT_URL_HERE", {
+   method: "POST",
+   body: JSON.stringify({
+     name: name.value,
+     father: father.value,
+     mobile: mobile.value,
+     aadhar: aadhar.value,
+     class: document.getElementById("class").value,
+     stream: document.getElementById("stream").value
+   })
+ })
+ .then(res => res.text())
+ .then(data => {
+   document.getElementById("msg").innerText = "Registration Successful!";
+ });
+});
+</script>
+
+</body>
+</html>
