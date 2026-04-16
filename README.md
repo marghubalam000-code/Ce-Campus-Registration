@@ -9,15 +9,17 @@ body { font-family: Arial; background:linear-gradient(135deg,#d4fc79,#96e6a1); p
 .container { max-width:500px; margin:auto; background:white; padding:20px; border-radius:15px; box-shadow:0 0 15px #888; }
 h2 { text-align:center; color:#2c7a2c; }
 .logo { text-align:center; }
-.logo img { width:120px; margin-bottom:10px; }
+.logo img { width:130px; margin-bottom:10px; }
 input, select { width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #ccc; }
-button { width:100%; padding:12px; background:#28a745; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
+button { width:100%; padding:12px; background:#28a745; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; margin-top:5px; }
 button:hover { background:#218838; }
 .success { color:green; text-align:center; margin-top:10px; font-weight:bold; }
-.qr { text-align:center; margin:15px 0; }
+.qr { text-align:center; margin:15px 0; padding:10px; background:#f8fff8; border-radius:10px; }
 .slip { background:#eaffea; padding:15px; margin-top:15px; border:1px solid green; border-radius:10px; }
 .idcard { margin-top:15px; padding:15px; border:2px solid #28a745; text-align:center; border-radius:10px; background:#f0fff0; }
 .idcard img { width:80px; height:80px; border-radius:50%; }
+.print-btn { background:#007bff; }
+.print-btn:hover { background:#0056b3; }
 </style>
 </head>
 <body>
@@ -26,14 +28,15 @@ button:hover { background:#218838; }
 
 <!-- LOGO -->
 <div class="logo">
-<img src="logo.png" alt="Logo">
+<img src="logo.png" onerror="this.style.display='none'">
 </div>
 
 <h2>Student Registration</h2>
 
+<!-- QR -->
 <div class="qr">
-<img src="qr.png" width="200">
-<p><b>Scan & Pay ₹500 Registration Fee</b></p>
+<img src="qr.png" width="200" onerror="this.style.display='none'">
+<p><b>type upi marghub0@ptyes & Pay ₹500 Registration Fee</b></p>
 </div>
 
 <form id="regForm">
@@ -42,7 +45,7 @@ button:hover { background:#218838; }
 <input type="number" id="mobile" placeholder="Mobile Number" required>
 <input type="text" id="aadhar" placeholder="Aadhar Number" required>
 
-<select id="class">
+<select id="class" required>
 <option value="">Select Class</option>
 <option>Class 8</option>
 <option>Class 9</option>
@@ -51,14 +54,14 @@ button:hover { background:#218838; }
 <option>Class 12</option>
 </select>
 
-<select id="stream">
+<select id="stream" required>
 <option value="">Select Stream</option>
 <option>Science</option>
 <option>Commerce</option>
 <option>Arts</option>
 </select>
 
-<label>Upload Profile Photo</label>
+<label>Upload student Photo</label>
 <input type="file" id="photo" accept="image/*" required>
 
 <label>Upload Payment Screenshot</label>
@@ -70,6 +73,7 @@ button:hover { background:#218838; }
 <div class="success" id="msg"></div>
 <div id="slip"></div>
 <div id="idcard"></div>
+
 </div>
 
 <script>
@@ -98,15 +102,18 @@ document.getElementById("regForm").addEventListener("submit", function(e){
 
    document.getElementById("msg").innerText = "Registration Successful!";
 
+   // SLIP with PRINT
    document.getElementById("slip").innerHTML = `
-   <div class="slip">
+   <div class="slip" id="printArea">
    <h3>Registration Slip</h3>
    <p><b>Name:</b> ${data.name}</p>
    <p><b>Class:</b> ${data.class}</p>
    <p><b>Stream:</b> ${data.stream}</p>
    <p><b>Date:</b> ${data.date}</p>
+   <button class="print-btn" onclick="printSlip()">Print Slip</button>
    </div>`;
 
+   // ID CARD
    document.getElementById("idcard").innerHTML = `
    <div class="idcard">
    <h3>Catalyst Educational Campus</h3>
@@ -120,6 +127,15 @@ document.getElementById("regForm").addEventListener("submit", function(e){
 
  reader.readAsDataURL(file);
 });
+
+// PRINT FUNCTION
+function printSlip(){
+ var content = document.getElementById('printArea').innerHTML;
+ var win = window.open('', '', 'width=600,height=600');
+ win.document.write('<html><head><title>Print</title></head><body>' + content + '</body></html>');
+ win.document.close();
+ win.print();
+}
 </script>
 
 </body>
