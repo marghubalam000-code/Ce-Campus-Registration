@@ -8,7 +8,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{
+body{<div class="design-by">
+    Design by M Rahman
+</div>
     font-family:Arial;
     background:linear-gradient(135deg,#00c9ff,#92fe9d);
     margin:0;
