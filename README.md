@@ -135,7 +135,7 @@ button:hover{background:#06724a;}
 
 </div>
 
-<div class="design-by">Design by M Rahman</div>
+<div class="design-by">Design by Marghubur Rahman</div>
 
 <script>
 emailjs.init("q7WRi2qk3AUR725UG");
